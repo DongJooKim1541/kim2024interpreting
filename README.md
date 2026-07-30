@@ -16,10 +16,12 @@ Efficient active learning by combining rotation prediction (self-supervised pret
 
 - [Overview](#overview)
 - [Installation](#installation)
-- [Quick Start](#quick-start)
+- [Quick Start](#quick-start-5-commands)
 - [Detailed Stage-by-Stage Usage](#detailed-stage-by-stage-usage)
 - [Configuration & Customization](#configuration--customization)
 - [Troubleshooting](#troubleshooting)
+- [Actual Results](#actual-results)
+- [Documentation](#documentation)
 - [Citation](#citation)
 
 ---
