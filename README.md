@@ -104,7 +104,7 @@ python src/rotation.py
 # Create 10 groups by loss (~3 min on GPU)
 python src/make_batches.py
 
-# Active learning with Thompson Sampling (~45 min on GPU, CIFAR-100)
+# Active learning with Thompson Sampling (~30-45 min on GPU, CIFAR-10)
 python src/main.py
 
 # View results
@@ -322,7 +322,8 @@ watch -n 1 nvidia-smi
 
 | Property | Value |
 |----------|-------|
-| Time | 45 min (GPU, CIFAR-100, Table 2 paper) / Not recommended (CPU) |
+| Time (GPU) | ~30 min (CIFAR-10) / ~45 min (CIFAR-100, Table 2 paper) |
+| Time (CPU) | Not recommended (>4 hours) |
 | VRAM | 6 GB |
 | Cycles | 100 |
 | Labeled data range | 2k → 20k |
