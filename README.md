@@ -468,7 +468,7 @@ Labeled Data    |    Accuracy
 For detailed technical documentation:
 - **[SDD.md](docs/SDD.md)** - Software Design Document (architecture, data flow, algorithm details)
 - **[TC.md](docs/TC.md)** - Test Cases (validation steps, performance benchmarks)
-- **[paper.pdf](docs/paper.pdf)** - Full paper (Nature 2024)
+- **[Full Paper (Nature 2024)](https://doi.org/10.1038/s41598-024-76864-2)** - Download from Nature Scientific Reports (open access)
 
 ---
 
