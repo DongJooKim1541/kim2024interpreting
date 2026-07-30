@@ -1,4 +1,4 @@
-# Interpreting Pretext Tasks for Active Learning: A RL Approach
+# Interpreting Pretext Tasks for Active Learning: A Reinforcement Learning Approach
 
 Efficient active learning by combining rotation prediction (self-supervised pretext task) with **Discounted Thompson Sampling** (multi-armed bandit) and reinforcement learning.
 
@@ -6,7 +6,7 @@ Efficient active learning by combining rotation prediction (self-supervised pret
 
 **DOI:** https://doi.org/10.1038/s41598-024-76864-2
 
-**Authors:** Dongjoo Kim¹, Minsik Lee² | **Institution:** Hanyang University, Applied AI Lab
+**Authors:** Dongjoo Kim¹, Minsik Lee² | **Institution:** Hanyang University, Deparment of Applied Artifical Intelligence
 
 **License:** CC-BY-NC-ND 4.0 International
 
@@ -49,8 +49,6 @@ This work interprets self-supervised pretext task losses as a **multi-armed band
 | PT4AL | 70.1% | 80.5% | 87.2% | 90.1% |
 | CoreGCN | 71.2% | 81.0% | 87.8% | 91.0% |
 | TA-VAAL | 70.8% | 80.9% | 87.5% | 90.8% |
-
-*Actual results from this implementation. ±0.5-1.5% variation possible due to random seed initialization.*
 
 ---
 
@@ -461,7 +459,7 @@ Labeled Data    |    Accuracy
      20,000     |    94.8%
 ```
 
-**Note:** Results from this codebase. Variation of ±0.5-1.5% possible with different random seeds.
+**Note:** Results from this codebase.
 **Comparison with Paper:** Paper Table 1 expects ~92% at 20k labels; we achieved **94.8%** (+2.8% improvement).
 
 ---
