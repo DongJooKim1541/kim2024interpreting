@@ -67,3 +67,4 @@ Thumbs.db
 # docs/paper.pdf is a research resource, intentionally NOT in git
 # To include it, remove from .gitignore or use Git LFS
 
+docs/paper.pdf
