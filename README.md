@@ -522,6 +522,6 @@ Contact authors for commercial licensing.
 
 ---
 
-**Questions?** Contact: dongjoo.kim@hanwha.com
+**Questions?** Contact: dongjookim1541@gmail.com
 
 **Last Updated:** July 31, 2026
