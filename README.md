@@ -6,7 +6,7 @@ Efficient active learning by combining rotation prediction (self-supervised pret
 
 **DOI:** https://doi.org/10.1038/s41598-024-76864-2
 
-**Authors:** Dongjoo Kim¹, Minsik Lee² | **Institution:** Hanyang University, Deparment of Applied Artifical Intelligence
+**Authors:** Dongjoo Kim¹, Minsik Lee² | **Institution:** Hanyang University, Department of Applied Artificial Intelligence
 
 **License:** CC-BY-NC-ND 4.0 International
 
