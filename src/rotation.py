@@ -20,8 +20,8 @@ import os
 import argparse
 import random
 
-from models import *
-from loader import Loader, RotationLoader
+from .models import *
+from .loader import Loader, RotationLoader
 import numpy as np
 
 

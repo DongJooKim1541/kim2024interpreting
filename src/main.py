@@ -8,9 +8,9 @@ import torchvision.transforms as transforms
 import os
 import numpy as np
 from scipy.stats import beta, bernoulli
-from models import ResNet18
-from loader import Loader, Loader2
-from config import *
+from .models import ResNet18
+from .loader import Loader, Loader2
+from .config import *
 
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 criterion = nn.CrossEntropyLoss()

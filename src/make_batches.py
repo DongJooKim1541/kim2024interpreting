@@ -21,8 +21,8 @@ import argparse
 import random
 import numpy as np
 
-from models import *
-from loader import Loader, RotationLoader
+from .models import *
+from .loader import Loader, RotationLoader
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0  # best test accuracy
