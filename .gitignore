@@ -1,8 +1,15 @@
 # Claude Code
 .claude/
 
-# Data & Models
+# Runtime Data & Models
 DATA/
+data/
+checkpoint/
+logs/
+*.h5
+*.pth
+*.pkl
+*.npy
 data/
 checkpoint/
 loss/
