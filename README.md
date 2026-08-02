@@ -178,7 +178,7 @@ python src/main.py
 ```
 kim2024interpreting/
 ├── README.md                    (This file)
-├── LICENSE
+├── LICENSE.md
 ├── .gitignore
 ├── docs/
 │   ├── SDD.md                   (Software Design Document - detailed architecture)
