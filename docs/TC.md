@@ -1,6 +1,12 @@
 # Test Cases (TC) Document
 ## Interpreting Pretext Tasks for Active Learning
 
+**Publication Reference:**
+- Title: "Interpreting Pretext Tasks for Active Learning: A Reinforcement Learning Approach"
+- Authors: Dongjoo Kim, Minsik Lee
+- Venue: Scientific Reports (Nature), Vol 14, Article 25774, October 2024
+- DOI: https://doi.org/10.1038/s41598-024-76864-2
+
 ---
 
 ## 1. Test Setup Overview

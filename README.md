@@ -91,6 +91,88 @@ python -c "import torch; print(f'PyTorch {torch.__version__}'); print(f'CUDA ava
 
 ---
 
+## Environment Variables
+
+All configuration can be customized via environment variables. Create a `.env` file in the project root or set them in your shell:
+
+```bash
+# Example: .env file
+ALPHA=0.1
+GAMMA=0.9
+REWARD_SCALE=2
+REWARD_THRESHOLD=0.4
+SAMPLING_RATIO=10
+GROUPS=10
+VALIDATION_PERCENT=0.01
+EPOCHS=200
+CYCLES=10
+BATCH_SIZE=128
+LR=0.1
+MOMENTUM=0.9
+WEIGHT_DECAY=5e-4
+DATA_DIR=./DATA
+LOSS_DIR=./loss
+CHECKPOINT_DIR=./checkpoint
+```
+
+**Or set individually in shell:**
+
+```bash
+# Linux/macOS
+export ALPHA=0.1
+export BATCH_SIZE=64
+export DATA_DIR=/custom/data/path
+python src/main.py
+
+# Windows PowerShell
+$env:ALPHA = "0.1"
+$env:BATCH_SIZE = "64"
+$env:DATA_DIR = "C:\custom\data\path"
+python src/main.py
+```
+
+### Environment Variable Reference
+
+**Active Learning Parameters:**
+
+| Variable | Default | Type | Description |
+|----------|---------|------|-------------|
+| `ALPHA` | 0.1 | float | EMA smoothing parameter (paper: α) |
+| `GAMMA` | 0.9 | float | Discount factor for Thompson Sampling (paper: γ) |
+| `REWARD_SCALE` | 2 | float | Sigmoid scale for reward function (paper: a) |
+| `REWARD_THRESHOLD` | 0.4 | float | Sigmoid threshold offset (paper: b) |
+
+**Sampling & Groups:**
+
+| Variable | Default | Type | Description |
+|----------|---------|------|-------------|
+| `SAMPLING_RATIO` | 10 | int | Sub-cycles per AL cycle (k in paper) |
+| `GROUPS` | 10 | int | Number of MAB groups (n_G in paper) |
+| `VALIDATION_PERCENT` | 0.01 | float | Validation set ratio (V in paper) |
+
+**Training Parameters:**
+
+| Variable | Default | Type | Description |
+|----------|---------|------|-------------|
+| `EPOCHS` | 200 | int | Epochs per cycle in validation networks |
+| `CYCLES` | 10 | int | Base AL cycles (multiplied by SAMPLING_RATIO) |
+| `BATCH_SIZE` | 128 | int | Training batch size |
+| `LR` | 0.1 | float | Learning rate (SGD) |
+| `MOMENTUM` | 0.9 | float | SGD momentum |
+| `WEIGHT_DECAY` | 5e-4 | float | L2 regularization coefficient |
+
+**Paths:**
+
+| Variable | Default | Type | Description |
+|----------|---------|------|-------------|
+| `DATA_DIR` | `./DATA` | str | Path to dataset directory |
+| `LOSS_DIR` | `./loss` | str | Path to loss and batch files |
+| `CHECKPOINT_DIR` | `./checkpoint` | str | Path to model checkpoints |
+
+**Note on `.env` file:** The project supports Python-dotenv. If a `.env` file exists in the project root, environment variables will be loaded automatically at startup.
+
+---
+
 ## Project Structure
 
 ```
@@ -375,7 +457,25 @@ watch -n 1 nvidia-smi
 
 ### Modifying Hyperparameters
 
-Edit `src/config.py`:
+**Option 1: Using Environment Variables (Recommended)**
+
+Create a `.env` file in the project root or set environment variables:
+
+```bash
+# .env file
+GAMMA=0.85
+REWARD_SCALE=3
+SAMPLING_RATIO=5
+CYCLES=20
+BATCH_SIZE=64
+EPOCHS=150
+```
+
+See [Environment Variables](#environment-variables) section for all available options.
+
+**Option 2: Editing Configuration File**
+
+Directly edit `src/config.py`:
 
 ```python
 # Example: More aggressive RL exploration
