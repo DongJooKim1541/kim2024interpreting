@@ -10,6 +10,7 @@ Reference:
 import glob
 import os
 from PIL import Image, ImageFilter
+from typing import Optional, Union, List, Tuple, Dict, Any
 
 from torch.utils.data import Dataset, DataLoader
 import torch
@@ -19,15 +20,15 @@ import random
 import cv2
 
 class RotationLoader(Dataset):
-    def __init__(self, is_train=True, transform=None, path='./DATA'):
+    def __init__(self, is_train: bool = True, transform: Optional[Any] = None, path: str = './DATA') -> None:
         self.is_train = is_train
         self.transform = transform
         self.img_path = glob.glob('./DATA/train/*/*.png')
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.img_path)
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Union[Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, int, int, int, int], Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, int, int, int, int, str]]:
         img = cv2.imread(self.img_path[idx])
         img = Image.fromarray(img)
 
@@ -51,7 +52,7 @@ class RotationLoader(Dataset):
             return imgs[rotations[0]], imgs[rotations[1]], imgs[rotations[2]], imgs[rotations[3]], rotations[0], rotations[1], rotations[2], rotations[3], self.img_path[idx]
 
 class Loader2(Dataset):
-    def __init__(self, is_train=True, transform=None, path='./DATA', path_list=None):
+    def __init__(self, is_train: bool = True, transform: Optional[Any] = None, path: str = './DATA', path_list: Optional[List[str]] = None) -> None:
         self.is_train = is_train
         self.transform = transform
         self.path_list = path_list
@@ -63,10 +64,10 @@ class Loader2(Dataset):
                 self.img_path = glob.glob('./DATA/train/*/*.png') # for loss extraction
             else:
                 self.img_path = path_list
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.img_path)
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, int]:
         if self.is_train:
             img = cv2.imread(self.img_path[idx][:-1])
         else:
@@ -81,8 +82,8 @@ class Loader2(Dataset):
         return img, label
 
 class Loader(Dataset):
-    def __init__(self, is_train=True, transform=None, path='./DATA'):
-        self.classes = 10 
+    def __init__(self, is_train: bool = True, transform: Optional[Any] = None, path: str = './DATA') -> None:
+        self.classes: int = 10
         self.is_train = is_train
         self.transform = transform
         if self.is_train: # train
@@ -90,10 +91,10 @@ class Loader(Dataset):
         else:
             self.img_path = glob.glob('./DATA/test/*/*')
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.img_path)
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, int]:
         img = cv2.imread(self.img_path[idx])
         img = Image.fromarray(img)
         img = self.transform(img)

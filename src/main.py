@@ -7,6 +7,7 @@ import torch.backends.cudnn as cudnn
 import torchvision.transforms as transforms
 import os
 import numpy as np
+from typing import Optional, Union, List, Tuple, Dict, Any
 from scipy.stats import beta, bernoulli
 from .models import ResNet18
 from .loader import Loader, Loader2
@@ -41,8 +42,8 @@ if device == 'cuda':
     cudnn.benchmark = True
 
 
-def sampling_valid(labeled_data_per_AL_cycle):
-    valid_ = []
+def sampling_valid(labeled_data_per_AL_cycle: List[int]) -> List[Any]:
+    valid_: List[Any] = []
     for group in range(0, GROUPS):
         with open(f'./loss/batch_{group}.txt', 'r') as f:
             samples = f.readlines()
@@ -56,9 +57,9 @@ def sampling_valid(labeled_data_per_AL_cycle):
     return valid_
 
 
-def get_learning_amount_B():
-    iterations_per_cycle_B = []
-    learning_amount_per_cycle_B = []
+def get_learning_amount_B() -> List[float]:
+    iterations_per_cycle_B: List[float] = []
+    learning_amount_per_cycle_B: List[float] = []
 
     for i in range(0, CYCLES):
         iterations_per_cycle_B.append((labeled_data_per_AL_cycle[i] / BATCH_SIZE) * EPOCHS)
@@ -71,9 +72,9 @@ def get_learning_amount_B():
     return learning_amount_per_cycle_B
 
 
-def compute_per_cycle_labeling_data(labeling_data_per_cycle, num_sub_cycles):
-    per_cycle = []
-    remainder_total = 0
+def compute_per_cycle_labeling_data(labeling_data_per_cycle: List[int], num_sub_cycles: int) -> List[int]:
+    per_cycle: List[int] = []
+    remainder_total: int = 0
 
     for cycle_data in labeling_data_per_cycle:
         base_count = cycle_data // num_sub_cycles
@@ -89,21 +90,21 @@ def compute_per_cycle_labeling_data(labeling_data_per_cycle, num_sub_cycles):
     return per_cycle
 
 
-def compute_cumulative_labeling_data(per_cycle):
-    cumulative = []
-    total = 0
+def compute_cumulative_labeling_data(per_cycle: List[int]) -> List[int]:
+    cumulative: List[int] = []
+    total: int = 0
     for count in per_cycle:
         total += count
         cumulative.append(total)
     return cumulative
 
 
-def compute_learning_amount_A(learning_amount_B, labeling_data_cycle_A, per_cycle_data):
-    learning_amount_A = []
-    idx = 0
+def compute_learning_amount_A(learning_amount_B: List[float], labeling_data_cycle_A: List[int], per_cycle_data: List[int]) -> List[float]:
+    learning_amount_A: List[float] = []
+    idx: int = 0
 
     for cycle_idx in range(CYCLES):
-        cycle_total = 0
+        cycle_total: float = 0
         for sub_cycle_idx in range(sampling_ratio_A):
             iterations = math.ceil(labeling_data_cycle_A[idx] / BATCH_SIZE)
             cycle_total += iterations * labeling_data_cycle_A[idx]
@@ -114,7 +115,7 @@ def compute_learning_amount_A(learning_amount_B, labeling_data_cycle_A, per_cycl
     return learning_amount_A
 
 
-def get_learning_amount_A():
+def get_learning_amount_A() -> Tuple[List[float], List[int], List[int]]:
     per_cycle = compute_per_cycle_labeling_data(labeling_data_per_cycle, sampling_ratio_A)
     cumulative = compute_cumulative_labeling_data(per_cycle)
 
@@ -127,9 +128,9 @@ def get_learning_amount_A():
     return learning_amount_A, per_cycle, cumulative
 
 
-def get_epoch_cycles_A(learning_amount_per_cycle_B, learning_amount_per_cycle_A):
-    epoch_A = []
-    epoch_total_cycle_A = []
+def get_epoch_cycles_A(learning_amount_per_cycle_B: List[float], learning_amount_per_cycle_A: List[float]) -> List[int]:
+    epoch_A: List[int] = []
+    epoch_total_cycle_A: List[int] = []
 
     for i in range(0, CYCLES):
         epoch_A.append(math.ceil(learning_amount_per_cycle_B[i] / learning_amount_per_cycle_A[i]))
@@ -142,7 +143,7 @@ def get_epoch_cycles_A(learning_amount_per_cycle_B, learning_amount_per_cycle_A)
     return epoch_total_cycle_A
 
 
-def adjust_labeling_for_validation(labeling_data_cycle_A, per_cycle, valid_count):
+def adjust_labeling_for_validation(labeling_data_cycle_A: List[int], per_cycle: List[int], valid_count: Union[List[Any], int]) -> Tuple[List[int], List[int]]:
     valid_size = len(valid_count) if isinstance(valid_count, list) else valid_count
 
     if labeling_data_cycle_A[0] - valid_size > 0:
@@ -167,7 +168,7 @@ def adjust_labeling_for_validation(labeling_data_cycle_A, per_cycle, valid_count
     return labeling_data_cycle_A, per_cycle
 
 
-def group_search_sampling_data(group_list_empty, Q_list, success_list, failure_list, valid_, labeled, sampling_quantity, model):
+def group_search_sampling_data(group_list_empty: List[int], Q_list: List[float], success_list: List[float], failure_list: List[float], valid_: List[Any], labeled: List[Any], sampling_quantity: int, model: nn.Module) -> Tuple[int, List[int], List[float], List[float], List[float], List[Any]]:
     group_empty = True
 
     while group_empty:
@@ -215,12 +216,12 @@ def group_search_sampling_data(group_list_empty, Q_list, success_list, failure_l
 
 
 # Training
-def train(net, criterion, optimizer, epoch, trainloader):
+def train(net: nn.Module, criterion: nn.Module, optimizer: optim.Optimizer, epoch: Union[int, float], trainloader: torch.utils.data.DataLoader) -> None:
     print('\nEpoch: %d' % (int(epoch) + 1))
     net.train()
-    train_loss = 0
-    correct = 0
-    total = 0
+    train_loss: float = 0
+    correct: int = 0
+    total: int = 0
     for batch_idx, (inputs, targets) in enumerate(trainloader):
         inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
@@ -239,11 +240,11 @@ def train(net, criterion, optimizer, epoch, trainloader):
 
 
 # Validation for weight saving and calculate loss
-def valid(net, criterion, epoch, total_epoch, cycle, best_acc, validloader):
+def valid(net: nn.Module, criterion: nn.Module, epoch: int, total_epoch: int, cycle: int, best_acc: float, validloader: torch.utils.data.DataLoader) -> Tuple[float, float]:
     net.eval()
-    valid_loss = 0
-    correct = 0
-    total = 0
+    valid_loss: float = 0
+    correct: int = 0
+    total: int = 0
 
     with torch.no_grad():
         for batch_idx, (inputs, targets) in enumerate(validloader):
@@ -290,11 +291,11 @@ def valid(net, criterion, epoch, total_epoch, cycle, best_acc, validloader):
 
 
 # Test
-def test(net, criterion):
+def test(net: nn.Module, criterion: nn.Module) -> float:
     net.eval()
-    test_loss = 0
-    correct = 0
-    total = 0
+    test_loss: float = 0
+    correct: int = 0
+    total: int = 0
     with torch.no_grad():
         for batch_idx, (inputs, targets) in enumerate(testloader):
             inputs, targets = inputs.to(device), targets.to(device)
@@ -314,11 +315,11 @@ def test(net, criterion):
 
 
 # get init loss for D_1
-def get_init_loss(net, criterion, validloader):
+def get_init_loss(net: nn.Module, criterion: nn.Module, validloader: torch.utils.data.DataLoader) -> float:
     net.eval()
-    init_loss = 0
-    correct = 0
-    total = 0
+    init_loss: float = 0
+    correct: int = 0
+    total: int = 0
     with torch.no_grad():
         for batch_idx, (inputs, targets) in enumerate(validloader):
             inputs, targets = inputs.to(device), targets.to(device)
@@ -337,10 +338,10 @@ def get_init_loss(net, criterion, validloader):
 
 
 # Sampling and labeling data
-def get_labels(net, samples, num_samples):
+def get_labels(net: nn.Module, samples: List[str], num_samples: int) -> np.ndarray:
     sub = Loader2(is_train=False, transform=transform_test, path_list=samples)
     ploader = torch.utils.data.DataLoader(sub, batch_size=1, shuffle=False, num_workers=4)
-    top1_scores = []
+    top1_scores: List[float] = []
     net.eval()
     with torch.no_grad():
         for idx, (inputs, targets) in enumerate(ploader):
@@ -358,7 +359,7 @@ def get_labels(net, samples, num_samples):
 
 
 # get EMA value
-def get_ema(alpha, last_ema, last_loss_diff, time_step):
+def get_ema(alpha: float, last_ema: float, last_loss_diff: float, time_step: int) -> Tuple[float, float]:
     cur_ema = last_loss_diff * alpha + last_ema * (1 - alpha)
     cur_ema_prime = cur_ema / (1 - ((1 - alpha) ** time_step))
 
@@ -366,11 +367,11 @@ def get_ema(alpha, last_ema, last_loss_diff, time_step):
 
 
 # Sigmoid function
-def sigmoid_func(input):
+def sigmoid_func(input: float) -> float:
     return 1 / (1 + np.exp(input * (-1)))
 
 
-def calculate_update_reward(group, reward_denominator, reward_numerator, success_list, failure_list, visited_list):
+def calculate_update_reward(group: int, reward_denominator: float, reward_numerator: float, success_list: List[float], failure_list: List[float], visited_list: List[int]) -> Tuple[List[float], List[float], List[int]]:
     if reward_denominator < 0:
         if reward_numerator >= reward_denominator:
             reward_prob = 1

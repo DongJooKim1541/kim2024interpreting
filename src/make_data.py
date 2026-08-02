@@ -10,14 +10,15 @@ Reference:
 import torch
 import torchvision
 import os
+from typing import Optional, Union, List, Tuple, Dict, Any
 
 class save_dataset(torch.utils.data.Dataset):
 
-  def __init__(self, dataset, split='train'):
+  def __init__(self, dataset: Any, split: str = 'train') -> None:
     self.dataset = dataset
     self.split = split
 
-  def __getitem__(self, idx):
+  def __getitem__(self, idx: int) -> None:
       data, label = self.dataset[idx]
       class_dir = f'./DATA/{self.split}/{label}'
 
@@ -27,16 +28,16 @@ class save_dataset(torch.utils.data.Dataset):
       path = f'{class_dir}/{idx}.png'
       data.save(path)
 
-  def __len__(self):
+  def __len__(self) -> int:
     return len(self.dataset)
 
 
-def prepare_directories():
+def prepare_directories() -> None:
     for path in ['./DATA', './DATA/train', './DATA/test']:
         os.makedirs(path, exist_ok=True)
 
 
-def convert_cifar_to_png(train_dataset, test_dataset):
+def convert_cifar_to_png(train_dataset: Any, test_dataset: Any) -> None:
     for idx in range(len(train_dataset)):
         train_dataset[idx]
 

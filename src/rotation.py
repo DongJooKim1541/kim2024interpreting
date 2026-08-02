@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
+from typing import Optional, Union, List, Tuple, Dict, Any
 
 import torchvision
 import torchvision.transforms as transforms
@@ -73,12 +74,12 @@ optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
 scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 60, 90])
 
 # Training
-def train(epoch):
+def train(epoch: int) -> None:
     print('\nEpoch: %d' % epoch)
     net.train()
-    train_loss = 0
-    correct = 0
-    total = 0
+    train_loss: float = 0
+    correct: int = 0
+    total: int = 0
     for batch_idx, (inputs, inputs1, inputs2, inputs3, targets, targets1, targets2, targets3) in enumerate(trainloader):
         inputs, inputs1, targets, targets1 = inputs.to(device), inputs1.to(device), targets.to(device), targets1.to(device)
         inputs2, inputs3, targets2, targets3 = inputs2.to(device), inputs3.to(device), targets2.to(device), targets3.to(device)
@@ -106,12 +107,12 @@ def train(epoch):
         correct += predicted3.eq(targets3).sum().item()
 
 
-def test(epoch):
+def test(epoch: int) -> None:
     global best_acc
     net.eval()
-    test_loss = 0
-    correct = 0
-    total = 0
+    test_loss: float = 0
+    correct: int = 0
+    total: int = 0
     with torch.no_grad():
         for batch_idx, (inputs, inputs1, inputs2, inputs3, targets, targets1, targets2, targets3, path) in enumerate(testloader):
             inputs, inputs1, targets, targets1 = inputs.to(device), inputs1.to(device), targets.to(device), targets1.to(device)

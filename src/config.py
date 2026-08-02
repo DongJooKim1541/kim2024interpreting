@@ -1,6 +1,7 @@
 """Configuration with environment variable support"""
 import os
 from pathlib import Path
+from typing import Optional, Union, List, Tuple, Dict
 
 try:
     from dotenv import load_dotenv
