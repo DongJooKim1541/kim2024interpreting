@@ -9,12 +9,13 @@ Reference:
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from typing import Optional, Union, List, Tuple, Dict, Type
 
 
 class BasicBlock(nn.Module):
-    expansion = 1
+    expansion: int = 1
 
-    def __init__(self, in_planes, planes, stride=1):
+    def __init__(self, in_planes: int, planes: int, stride: int = 1) -> None:
         super(BasicBlock, self).__init__()
         self.conv1 = nn.Conv2d(
             in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
@@ -31,7 +32,7 @@ class BasicBlock(nn.Module):
                 nn.BatchNorm2d(self.expansion*planes)
             )
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
         out += self.shortcut(x)
@@ -40,9 +41,9 @@ class BasicBlock(nn.Module):
 
 
 class Bottleneck(nn.Module):
-    expansion = 4
+    expansion: int = 4
 
-    def __init__(self, in_planes, planes, stride=1):
+    def __init__(self, in_planes: int, planes: int, stride: int = 1) -> None:
         super(Bottleneck, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
@@ -61,7 +62,7 @@ class Bottleneck(nn.Module):
                 nn.BatchNorm2d(self.expansion*planes)
             )
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         out = F.relu(self.bn1(self.conv1(x)))
         out = F.relu(self.bn2(self.conv2(out)))
         out = self.bn3(self.conv3(out))
@@ -71,9 +72,9 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes=100):
+    def __init__(self, block: Type[Union[BasicBlock, Bottleneck]], num_blocks: List[int], num_classes: int = 100) -> None:
         super(ResNet, self).__init__()
-        self.in_planes = 64
+        self.in_planes: int = 64
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3,
                                stride=1, padding=1, bias=False)
@@ -84,15 +85,15 @@ class ResNet(nn.Module):
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.linear = nn.Linear(512*block.expansion, num_classes)
 
-    def _make_layer(self, block, planes, num_blocks, stride):
+    def _make_layer(self, block: Type[Union[BasicBlock, Bottleneck]], planes: int, num_blocks: int, stride: int) -> nn.Sequential:
         strides = [stride] + [1]*(num_blocks-1)
-        layers = []
+        layers: List[Union[BasicBlock, Bottleneck]] = []
         for stride in strides:
             layers.append(block(self.in_planes, planes, stride))
             self.in_planes = planes * block.expansion
         return nn.Sequential(*layers)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.layer1(out)
         out = self.layer2(out)
@@ -104,27 +105,27 @@ class ResNet(nn.Module):
         return out
 
 
-def ResNet18():
+def ResNet18() -> ResNet:
     return ResNet(BasicBlock, [2, 2, 2, 2])
 
 
-def ResNet34():
+def ResNet34() -> ResNet:
     return ResNet(BasicBlock, [3, 4, 6, 3])
 
 
-def ResNet50():
+def ResNet50() -> ResNet:
     return ResNet(Bottleneck, [3, 4, 6, 3])
 
 
-def ResNet101():
+def ResNet101() -> ResNet:
     return ResNet(Bottleneck, [3, 4, 23, 3])
 
 
-def ResNet152():
+def ResNet152() -> ResNet:
     return ResNet(Bottleneck, [3, 8, 36, 3])
 
 
-def test():
+def test() -> None:
     net = ResNet18()
     y = net(torch.randn(1, 3, 32, 32))
     print(y.size())
